@@ -1,6 +1,15 @@
 namespace SpriteKind {
     export const Environment = SpriteKind.create()
 }
+function paddle_collision () {
+    if (ball.overlapsWith(paddle_lt)) {
+        ball.x = 14
+        ball.vx = ball.vx * -1
+    } else if (ball.overlapsWith(paddle_rt)) {
+        ball.x = scene.screenWidth() - 14
+        ball.vx = ball.vx * -1
+    }
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     ball.setVelocity(-50, 50)
 })
@@ -30,11 +39,11 @@ function ball_collision () {
         ball.vy = ball.vy * -1
     }
 }
-let paddle_rt: Sprite = null
-let paddle_lt: Sprite = null
 let screen_pos_y = 0
 let screen_pos_x = 0
 let background: Image = null
+let paddle_rt: Sprite = null
+let paddle_lt: Sprite = null
 let ball: Sprite = null
 game.splash("Welcome to Pong", "Press A to Begin")
 scene.setBackgroundImage(draw_background())
@@ -47,6 +56,7 @@ ball = sprites.create(assets.image`ball`, SpriteKind.Projectile)
 ball.setPosition(scene.screenWidth() - 10 - paddle_width * 1.5, 59)
 game.onUpdate(function () {
     ball_collision()
+    paddle_collision()
     if (paddle_lt.y < paddle_height / 2 + 2) {
         paddle_lt.y = paddle_height / 2 + 2
     }
