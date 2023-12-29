@@ -2,17 +2,26 @@ namespace SpriteKind {
     export const Environment = SpriteKind.create()
 }
 function paddle_collision () {
-    if (ball.overlapsWith(paddle_lt)) {
-        ball.x = 14
-        ball.vx = ball.vx * -1
-    } else if (ball.overlapsWith(paddle_rt)) {
-        ball.x = scene.screenWidth() - 14
-        ball.vx = ball.vx * -1
+    if (ball.overlapsWith(paddle_lt) || ball.overlapsWith(paddle_rt)) {
+        music.play(music.createSoundEffect(WaveShape.Triangle, 1687, 326, 255, 0, 20, SoundExpressionEffect.Tremolo, InterpolationCurve.Logarithmic), music.PlaybackMode.UntilDone)
+        ball.vx = ball.vx * -1.04
+        if (ball.x < scene.screenWidth() / 2) {
+            ball.x = 12
+        } else {
+            ball.x = scene.screenWidth() - 12
+        }
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    ball.setVelocity(-50, 50)
+    ball.setVelocity(100, 50)
 })
+function computer_ai () {
+    if (paddle_rt.y < ball.y - 10) {
+        paddle_rt.y += 1.5
+    } else if (paddle_rt.y > ball.y + 10) {
+        paddle_rt.y += -1.5
+    }
+}
 function draw_background () {
     scene.setBackgroundColor(15)
     background = image.create(scene.screenWidth(), scene.screenHeight())
@@ -55,6 +64,7 @@ create_paddles(paddle_width, paddle_height)
 ball = sprites.create(assets.image`ball`, SpriteKind.Projectile)
 ball.setPosition(scene.screenWidth() - 10 - paddle_width * 1.5, 59)
 game.onUpdate(function () {
+    computer_ai()
     ball_collision()
     paddle_collision()
     if (paddle_lt.y < paddle_height / 2 + 2) {
