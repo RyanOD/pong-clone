@@ -2,12 +2,12 @@ namespace SpriteKind {
     export const Environment = SpriteKind.create()
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    ball.setVelocity(-100, 50)
+    ball.setVelocity(-100, randint(50, 90) * randint(-1, 1))
 })
 function computer_ai () {
-    if (paddle_rt.y + paddle_height / 2 < ball.y - 10) {
+    if (paddle_rt.y < ball.y - 10) {
         paddle_rt.y += 2
-    } else if (paddle_rt.y + paddle_height / 2 > ball.y + 10) {
+    } else if (paddle_rt.y > ball.y + 10) {
         paddle_rt.y += -2
     }
 }
@@ -52,7 +52,8 @@ function ball_wall_collision () {
 function game_reset () {
     sprites.destroy(ball)
     ball = sprites.create(assets.image`ball`, SpriteKind.Projectile)
-    ball.setPosition(scene.screenWidth() - 10 - paddle_width * 1.5, 59)
+    ball.setPosition(scene.screenWidth() - 10 - paddle_width * 1.5, scene.screenHeight() / 2)
+    paddle_rt.y = scene.screenHeight() / 2
 }
 let paddle_lt: Sprite = null
 let screen_pos_y = 0
@@ -60,14 +61,13 @@ let screen_pos_x = 0
 let background: Image = null
 let paddle_rt: Sprite = null
 let ball: Sprite = null
-let paddle_height = 0
 let paddle_width = 0
 game.splash("Welcome to Pong", "Press A to Begin")
 scene.setBackgroundImage(draw_background())
 info.player1.setScore(0)
 info.player2.setScore(0)
 paddle_width = 4
-paddle_height = 16
+let paddle_height = 16
 create_paddles(paddle_width, paddle_height)
 game_reset()
 game.onUpdate(function () {
