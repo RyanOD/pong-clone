@@ -71,7 +71,11 @@ paddle_height = 16
 create_paddles(paddle_width, paddle_height)
 game_reset()
 game.onUpdate(function () {
-    if (ball.x > scene.screenWidth() || ball.x < 0) {
+    if (ball.x > scene.screenWidth()) {
+        info.player1.changeScoreBy(1)
+        game_reset()
+    } else if (ball.x < 0) {
+        info.player2.changeScoreBy(1)
         game_reset()
     }
     computer_ai()
